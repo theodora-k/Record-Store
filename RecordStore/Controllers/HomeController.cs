@@ -179,6 +179,92 @@ namespace RecordStore.Controllers
             return RedirectToAction("DetailsArtist");
         }
 
+        //-------- Employee
+        public ActionResult DetailsEmployee(string tableName)
+        {
+            return View(rs.Employees);
+        }
+        public ActionResult CreateEmployee(string lastname, string firstname, string title, int reportsto, DateTime birthdate, DateTime hiredate, string address, string city, string country, string postalcode, string phone, string fax, string email)
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public ActionResult CreateEmpl(string lastname, string firstname, string title, int reportsto, DateTime birthdate, DateTime hiredate, string address, string city, string country, string postalcode, string phone, string fax, string email)
+        {
+
+            Employee newEntry = new Employee();
+            newEntry.LastName = lastname;
+            newEntry.FirstName = firstname;
+            newEntry.Title = title;
+            newEntry.ReportsTo = reportsto;
+            newEntry.BirthDate = birthdate;
+            newEntry.HireDate = hiredate;
+            newEntry.Address = address;
+            newEntry.City = city;
+            newEntry.State = state;
+            newEntry.Country = country;
+            newEntry.PostalCode = postalcode;
+            newEntry.Phone = phone;
+            newEntry.Fax = fax;
+            newEntry.Email = email;
+
+            rs.Employees.Add(newEntry);
+            rs.SaveChanges();
+
+            Response.Write(@"<script language='javascript'>alert('Data inserted successfully');</script>"); //---------------------------Not working
+
+            return RedirectToAction("DetailsEmployee");
+        }
+
+        public ActionResult DeleteEmployee(string employeeid)
+        {
+            int id = Int32.Parse(employeeid);
+
+            rs.Employees.RemoveRange(rs.Employees.Where(c => c.EmployeeId == id));
+            rs.SaveChanges();
+
+            Response.Write("<script>alert('Data removed')</script>");
+
+            return RedirectToAction("DetailsEmployee");
+
+        }
+
+        public ActionResult EditEmployee(int employeeid, string lastname, string firstname, string title, int reportsto, DateTime birthdate, DateTime hiredate, string address, string city, string country, string postalcode, string phone, string fax, string email)
+        {
+
+            return View();
+        }
+
+        [HttpPost]
+        public ActionResult EditEmpl(int employeeid, string lastname, string firstname, string title, int reportsto, DateTime birthdate, DateTime hiredate, string address, string city, string country, string postalcode, string phone, string fax, string email)
+        {
+            Employee newEntry = new Employee();
+            newEntry.LastName = lastname;
+            newEntry.FirstName = firstname;
+            newEntry.Title = title;
+            newEntry.ReportsTo = reportsto;
+            newEntry.BirthDate = birthdate;
+            newEntry.HireDate = hiredate;
+            newEntry.Address = address;
+            newEntry.City = city;
+            newEntry.State = state;
+            newEntry.Country = country;
+            newEntry.PostalCode = postalcode;
+            newEntry.Phone = phone;
+            newEntry.Fax = fax;
+            newEntry.Email = email;
+
+            Employee entryData = rs.Employees.SingleOrDefault(employee => employee.EmployeeId == employeeid);
+
+            rs.Entry(entryData).CurrentValues.SetValues(newEntry);
+            rs.SaveChanges();
+
+            Response.Write("<script>alert('Data inserted successfully')</script>");
+
+            return RedirectToAction("DetailsEmployee");
+        }
+
 
 
 

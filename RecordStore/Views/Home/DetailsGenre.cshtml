@@ -1,0 +1,32 @@
+﻿@model IEnumerable<RecordStore.Models.Genre>
+
+@{
+    ViewBag.Title = "Details";
+}
+
+    <p>
+        @Html.ActionLink("Create New", "CreateGenre")|
+        @Html.ActionLink("Back to List", "Index")
+    </p>
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.Name)
+        </th>
+        <th></th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Name)
+            </td>
+            <td>
+                @Html.ActionLink("Edit", "EditGenre", new { genreid = item.GenreId, name = item.Name }) |
+                @Html.ActionLink("Delete", "DeleteGenre", new { genreid = item.GenreId })
+            </td>
+        </tr>
+    }
+
+</table>

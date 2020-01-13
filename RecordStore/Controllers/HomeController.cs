@@ -354,5 +354,147 @@ namespace RecordStore.Controllers
             return RedirectToAction("DetailsCustomer");
         }
 
+        //------------ Genre
+        public ActionResult DetailsGenre(string tableName)
+        {
+            return View(rs.Genres);
+        }
+        public ActionResult CreateGenre()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public ActionResult CreateGen(string name)
+        {
+
+            Genre newEntry = new Genre();
+            //newEntry.CustomerId = customerid;
+            newEntry.Name = name;
+
+            rs.Genres.Add(newEntry);
+            rs.SaveChanges();
+
+            Response.Write(@"<script language='javascript'>alert('Data inserted successfully');</script>"); //---------------------------Not working
+
+            return RedirectToAction("DetailsGenre");
+        }
+
+        public ActionResult DeleteGenre(string genreid)
+        {
+            int id = Int32.Parse(genreid);
+
+            rs.Genres.RemoveRange(rs.Genres.Where(c => c.GenreId == id));
+            rs.SaveChanges();
+
+            Response.Write("<script>alert('Data removed')</script>");
+
+            return RedirectToAction("DetailsGenre");
+
+        }
+
+        public ActionResult EditGenre(int genreid, string name)
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public ActionResult EditGen(int genreid, string name)
+        {
+            Genre newEntry = new Genre();
+            newEntry.GenreId = genreid;
+            newEntry.Name = name;
+
+            Genre entryData = rs.Genres.SingleOrDefault(genre => genre.GenreId == genreid);
+
+            rs.Entry(entryData).CurrentValues.SetValues(newEntry);
+            rs.SaveChanges();
+
+            Response.Write("<script>alert('Data inserted successfully')</script>");
+
+            return RedirectToAction("DetailsGenre");
+        }
+
+        //------------ Invoice
+        public ActionResult DetailsInvoice(string tableName)
+        {
+            return View(rs.Invoices);
+        }
+        public ActionResult CreateInvoice()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public ActionResult CreateInvo(int customerid, DateTime invoicedate,
+            string billingaddress, string billingcity, string billingstate, 
+            string billingcountry, string billingpostalcode, decimal? total )
+        {
+
+            Invoice newEntry = new Invoice();
+            //newEntry.InvoiceId = invoiceid;
+            newEntry.CustomerId = customerid;
+            newEntry.InvoiceDate = invoicedate;
+            newEntry.BillingAddress = billingaddress;
+            newEntry.BillingCity = billingcity;
+            newEntry.BillingState = billingstate;
+            newEntry.BillingCountry = billingcountry;
+            newEntry.BillingPostalCode = billingpostalcode;
+            newEntry.Total = total;
+
+            rs.Invoices.Add(newEntry);
+            rs.SaveChanges();
+
+            Response.Write(@"<script language='javascript'>alert('Data inserted successfully');</script>"); //---------------------------Not working
+
+            return RedirectToAction("DetailsInvoice");
+        }
+
+        public ActionResult DeleteInvoice(string invoiceid)
+        {
+            int id = Int32.Parse(invoiceid);
+
+            rs.Invoices.RemoveRange(rs.Invoices.Where(c => c.InvoiceId == id));
+            rs.SaveChanges();
+
+            Response.Write("<script>alert('Data removed')</script>");
+
+            return RedirectToAction("DetailsInvoice");
+
+        }
+
+        public ActionResult EditInvoice(int invoiceid, int customerid, DateTime invoicedate,
+            string billingaddress, string billingcity, string billingstate,
+            string billingcountry, string billingpostalcode, decimal? total)
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public ActionResult EditInvo(int invoiceid, int customerid, DateTime invoicedate,
+            string billingaddress, string billingcity, string billingstate,
+            string billingcountry, string billingpostalcode, decimal? total)
+        {
+            Invoice newEntry = new Invoice();
+            newEntry.InvoiceId = invoiceid;
+            newEntry.CustomerId = customerid;
+            newEntry.InvoiceDate = invoicedate;
+            newEntry.BillingAddress = billingaddress;
+            newEntry.BillingCity = billingcity;
+            newEntry.BillingState = billingstate;
+            newEntry.BillingCountry = billingcountry;
+            newEntry.BillingPostalCode = billingpostalcode;
+            newEntry.Total = total;
+
+            Invoice entryData = rs.Invoices.SingleOrDefault(invoice => invoice.InvoiceId == invoiceid);
+
+            rs.Entry(entryData).CurrentValues.SetValues(newEntry);
+            rs.SaveChanges();
+
+            Response.Write("<script>alert('Data inserted successfully')</script>");
+
+            return RedirectToAction("DetailsInvoice");
+        }
+
     }
 }

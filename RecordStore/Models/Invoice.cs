@@ -19,7 +19,7 @@ namespace RecordStore.Models
         public string BillingState { get; set; }
         public string BillingCountry { get; set; }
         public string BillingPostalCode { get; set; }
-        public double Total { get; set; }
+        public decimal? Total { get; set; }
 
 
     }

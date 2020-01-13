@@ -440,6 +440,12 @@
     <Content Include="Views\Home\DetailsEmployee.cshtml" />
     <Content Include="Views\Home\CreateEmployee.cshtml" />
     <Content Include="Views\Home\EditEmployee.cshtml" />
+    <Content Include="Views\Home\DetailsGenre.cshtml" />
+    <Content Include="Views\Home\CreateGenre.cshtml" />
+    <Content Include="Views\Home\EditGenre.cshtml" />
+    <Content Include="Views\Home\DetailsInvoice.cshtml" />
+    <Content Include="Views\Home\CreateInvoice.cshtml" />
+    <Content Include="Views\Home\EditInvoice.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

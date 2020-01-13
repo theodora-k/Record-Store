@@ -437,6 +437,9 @@
     <Content Include="Views\Home\CreateCustomer.cshtml" />
     <Content Include="Views\Home\DetailsCustomer.cshtml" />
     <Content Include="Views\Home\EditCustomer.cshtml" />
+    <Content Include="Views\Home\DetailsEmployee.cshtml" />
+    <Content Include="Views\Home\CreateEmployee.cshtml" />
+    <Content Include="Views\Home\EditEmployee.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

@@ -57,7 +57,8 @@ namespace RecordStore.Controllers
         {
             return View(rs.Albums);
         }
-        public ActionResult CreateAlbum(string name)
+        public ActionResult CreateAlbum(//string name
+            )
         {
             return View();
         }
@@ -123,7 +124,7 @@ namespace RecordStore.Controllers
         {
             return View(rs.Artists);
         }
-        public ActionResult CreateArtist(string name)
+        public ActionResult CreateArtist()
         {
             return View();
         }
@@ -184,13 +185,13 @@ namespace RecordStore.Controllers
         {
             return View(rs.Employees);
         }
-        public ActionResult CreateEmployee(string lastname, string firstname, string title, int reportsto, DateTime birthdate, DateTime hiredate, string address, string city, string country, string postalcode, string phone, string fax, string email)
+        public ActionResult CreateEmployee()
         {
             return View();
         }
 
         [HttpPost]
-        public ActionResult CreateEmpl(string lastname, string firstname, string title, int reportsto, DateTime birthdate, DateTime hiredate, string address, string city, string country, string postalcode, string phone, string fax, string email)
+        public ActionResult CreateEmpl(string lastname, string firstname, string title, int? reportsto, DateTime birthdate, DateTime hiredate, string address, string city, string state, string country, string postalcode, string phone, string fax, string email)
         {
 
             Employee newEntry = new Employee();
@@ -230,16 +231,17 @@ namespace RecordStore.Controllers
 
         }
 
-        public ActionResult EditEmployee(int employeeid, string lastname, string firstname, string title, int reportsto, DateTime birthdate, DateTime hiredate, string address, string city, string country, string postalcode, string phone, string fax, string email)
+        public ActionResult EditEmployee(int employeeid, string lastname, string firstname, string title, int? reportsto, DateTime birthdate, DateTime hiredate, string address, string city, string state, string country, string postalcode, string phone, string fax, string email)
         {
 
             return View();
         }
 
         [HttpPost]
-        public ActionResult EditEmpl(int employeeid, string lastname, string firstname, string title, int reportsto, DateTime birthdate, DateTime hiredate, string address, string city, string country, string postalcode, string phone, string fax, string email)
+        public ActionResult EditEmpl(int employeeid, string lastname, string firstname, string title, int? reportsto, DateTime birthdate, DateTime hiredate, string address, string city, string state, string country, string postalcode, string phone, string fax, string email)
         {
             Employee newEntry = new Employee();
+            newEntry.EmployeeId = employeeid;
             newEntry.LastName = lastname;
             newEntry.FirstName = firstname;
             newEntry.Title = title;
@@ -266,131 +268,12 @@ namespace RecordStore.Controllers
         }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
         //------------ Customer
         public ActionResult DetailsCustomer(string tableName)
         {
             return View(rs.Customers);
         }
-        public ActionResult CreateCustomer(string name)
+        public ActionResult CreateCustomer()
         {
             return View();
         }

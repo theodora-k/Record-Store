@@ -13,7 +13,7 @@ namespace RecordStore.Models
 
         public string FirstName { get; set; }
         public string Title { get; set; }
-        public int ReportsTo { get; set; }
+        public int? ReportsTo { get; set; }
 
         [DataType(DataType.Date)]
         public DateTime BirthDate { get; set; }

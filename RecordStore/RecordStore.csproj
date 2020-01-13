@@ -433,13 +433,10 @@
     <Content Include="Views\Home\EditAlbum.cshtml" />
     <Content Include="Views\Home\EditArtist.cshtml" />
     <Content Include="Views\Home\View.cshtml" />
-    <Content Include="Views\Home\DetailsCustomer.cshtml" />
-    <Content Include="Views\Home\DetailsGenre.cshtml" />
-    <Content Include="Views\Home\DetailsEmployee.cshtml" />
-    <Content Include="Views\Home\DetailsInvoice.cshtml" />
-    <Content Include="Views\Home\DetailsMediaType.cshtml" />
-    <Content Include="Views\Home\DetailsTrack.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
+    <Content Include="Views\Home\CreateCustomer.cshtml" />
+    <Content Include="Views\Home\DetailsCustomer.cshtml" />
+    <Content Include="Views\Home\EditCustomer.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

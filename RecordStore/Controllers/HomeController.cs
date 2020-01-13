@@ -178,5 +178,92 @@ namespace RecordStore.Controllers
 
             return RedirectToAction("DetailsArtist");
         }
+
+        //------------ Customer
+        public ActionResult DetailsCustomer(string tableName)
+        {
+            return View(rs.Customers);
+        }
+        public ActionResult CreateCustomer(string name)
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public ActionResult CreateCust(string firstName, string lastName, string company, string address, string city,
+            string state, string country, string postalCode, string phone, string fax, string email, int supportRepId)
+        {
+
+            Customer newEntry = new Customer();
+            //newEntry.CustomerId = customerid;
+            newEntry.FirstName = firstName;
+            newEntry.LastName = lastName;
+            newEntry.Company = company;
+            newEntry.Address = address;
+            newEntry.City = city;
+            newEntry.State = state;
+            newEntry.Country = country;
+            newEntry.PostalCode = postalCode;
+            newEntry.Phone = phone;
+            newEntry.Fax = fax;
+            newEntry.Email = email;
+            newEntry.SupportRepId = supportRepId; 
+
+            rs.Customers.Add(newEntry);
+            rs.SaveChanges();
+
+            Response.Write(@"<script language='javascript'>alert('Data inserted successfully');</script>"); //---------------------------Not working
+
+            return RedirectToAction("DetailsCustomer");
+        }
+
+        public ActionResult DeleteCustomer(string customerid)
+        {
+            int id = Int32.Parse(customerid);
+
+            rs.Customers.RemoveRange(rs.Customers.Where(c => c.CustomerId == id));
+            rs.SaveChanges();
+
+            Response.Write("<script>alert('Data removed')</script>");
+
+            return RedirectToAction("DetailsCustomer");
+
+        }
+
+        public ActionResult EditCustomer(int customerId, string firstName, string lastName, string company, string address, string city,
+            string state, string country, string postalCode, string phone, string fax, string email, int supportRepId)
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public ActionResult EditCust(int customerid, string firstName, string lastName, string company, string address, string city,
+            string state, string country, string postalCode, string phone, string fax, string email, int supportRepId)
+        {
+            Customer newEntry = new Customer();
+            newEntry.CustomerId = customerid;
+            newEntry.FirstName = firstName;
+            newEntry.LastName = lastName;
+            newEntry.Company = company;
+            newEntry.Address = address;
+            newEntry.City = city;
+            newEntry.State = state;
+            newEntry.Country = country;
+            newEntry.PostalCode = postalCode;
+            newEntry.Phone = phone;
+            newEntry.Fax = fax;
+            newEntry.Email = email;
+            newEntry.SupportRepId = supportRepId;
+
+            Customer entryData = rs.Customers.SingleOrDefault(customer => customer.CustomerId == customerid);
+
+            rs.Entry(entryData).CurrentValues.SetValues(newEntry);
+            rs.SaveChanges();
+
+            Response.Write("<script>alert('Data inserted successfully')</script>");
+
+            return RedirectToAction("DetailsCustomer");
+        }
+
     }
 }

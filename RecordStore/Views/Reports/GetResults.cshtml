@@ -1,0 +1,29 @@
+﻿<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Your Query Results</title>
+</head>
+<body>
+    <div>
+        <h4>@ViewBag.Title</h4>
+        <hr />
+        <dl class="dl-horizontal">
+            @foreach (var item in ViewData)
+            {
+                <dt>
+                    @item.Value
+                </dt>
+
+                <dd>
+                    @item.Key
+                </dd>
+            }
+            </dl>
+    </div>
+    <p>
+        @Html.ActionLink("Back to Reports", "Report","Reports")
+    </p>
+</body>
+</html>

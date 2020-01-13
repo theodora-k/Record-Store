@@ -1,0 +1,33 @@
+﻿@{
+    ViewBag.Title = "Create Reports";
+}
+<h2>@ViewBag.Title.</h2>
+<h3>@ViewBag.Message</h3>
+
+<p>By choosing the desired parameters, you are able to generate form reports.</p>
+
+<div class="row">
+    <div class="col-md-4">
+        <h2>Top-selling Artists</h2>
+        <p>
+            Retrieve artists who have sold an amount of record copies over a set threshold for a specific timespan.
+        </p>
+        <form action="">
+            First name: <input type="text" name="fname"><br>
+            Last name: <input type="text" name="lname"><br>
+            <input type="submit" value="Submit">
+
+        </form>
+        <p><button class="btn btn-default"> @Html.ActionLink("Manage", "Index", "Home") </button></p>
+    </div>
+    <div class="col-md-4">
+        <h2>Top 10</h2>
+        <p>Find out the top 10 songs among user preferences for the desired time span</p>
+        <p><a class="btn btn-default" href="https://go.microsoft.com/fwlink/?LinkId=301866">Learn more &raquo;</a></p>
+    </div>
+    <div class="col-md-4">
+        <h2>Favorite Music Genres</h2>
+        <p>You can easily find a web hosting company that offers the right mix of features and price for your applications.</p>
+        <p><a class="btn btn-default" href="https://go.microsoft.com/fwlink/?LinkId=301867">Learn more &raquo;</a></p>
+    </div>
+</div>

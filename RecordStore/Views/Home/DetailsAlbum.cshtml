@@ -1,0 +1,47 @@
+﻿@model IEnumerable<RecordStore.Models.Album>
+
+@{
+    ViewBag.Title = "Albums";
+}
+
+<h3>DetailsAlbum</h3>
+
+<p>
+    @Html.ActionLink("Create New", "CreateAlbum") |
+    @Html.ActionLink("Back to List", "Index")
+</p>
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.AlbumId)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Title)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.ArtistId)
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.AlbumId)
+
+        </td>
+
+        <td>
+            @Html.DisplayFor(modelItem => item.Title)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.ArtistId)
+        </td>
+        <td>
+            @Html.ActionLink("Edit", "EditAlbum", new { title=item.Title, albumId=item.AlbumId, artistId=item.ArtistId}) |
+            @Html.ActionLink("Delete", "DeleteAlbum", new { title=item.Title })
+        </td>
+    </tr>
+}
+
+</table>

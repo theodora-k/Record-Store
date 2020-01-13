@@ -1,0 +1,29 @@
+﻿@model IEnumerable<RecordStore.Models.RecordStoreContext>
+
+@{
+    ViewBag.Title = "ViewTables";
+}
+
+<h3>View All Tables</h3>
+
+<table class="table">
+    <tr>
+        <th>
+            <h4>Table Names</h4>
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model.GetType().GetProperties())
+{ 
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Name)</td>
+            <td>
+                @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
+                @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
+            </td>
+        </tr>
+    }
+
+</table>

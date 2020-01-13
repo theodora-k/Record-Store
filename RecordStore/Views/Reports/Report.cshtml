@@ -1,0 +1,110 @@
+﻿<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+<script src="https://unpkg.com/gijgo@1.9.13/js/gijgo.min.js" type="text/javascript"></script>
+<link href="https://unpkg.com/gijgo@1.9.13/css/gijgo.min.css" rel="stylesheet" />
+{@ViewBag.Title = "Reports";}
+<h1>Create Reports</h1>
+<h4>Explore some interesting statistics from album sales, top songs and genres!</h4>
+<div class="row">
+    <div class="col-md-4">
+        <h2>Top-selling Artists</h2>
+        <p>
+            Retrieve artists who have sold an amount of record copies over a set threshold for a specific timespan.
+        </p>
+        <form action="GetArtists" method="post">
+            @{
+                if (ViewBag.Message == "101")
+                {
+                    <p style="color: red">You must select at least one parameter!</p>
+                }
+                else if (ViewBag.Message == "104")
+                {
+                    <p style="color: red"> No data found for the given parameters! </p>
+                }
+
+            }
+
+            Record Amount Threshold (Integer) : <input id="xnumber" name="xnumber" type="text" class="numbersOnly" width="200" /><br>
+            Date from: <input id="datepicker1" name="datepicker1" type="text" width="200" /><br>
+            Date to: <input id="datepicker2" name="datepicker2" type="text" width="200"><br>
+            <script>
+                $('#datepicker1').datepicker({
+                    uiLibrary: 'bootstrap'
+                });
+                $('#datepicker2').datepicker({
+                    uiLibrary: 'bootstrap'
+                });
+                jQuery('.numbersOnly').keyup(function () {
+                    this.value = this.value.replace(/[^0-9\.]/g, '');
+                });
+            </script>
+
+            <input class="btn btn-default" type="submit" value="Show Me">
+
+        </form>
+        
+    </div>
+    <div class="col-md-4">
+        <h2>Top 10</h2>
+        <p>Find out the top 10 songs among user preferences for the desired time span</p>
+        <form action="GetSongs" method="post">
+            @{
+                if (ViewBag.Message == "201")
+                {
+                    <p style="color: red">You must select at least one parameter!</p>
+                }
+                else if (ViewBag.Message == "204")
+                {
+                    <p style="color: red"> No data found for the given parameters! </p>
+                }
+
+            }
+            Date from: <input id="datepicker3" size="200" /><br>
+            Date to: <input id="datepicker4" size="200"><br>
+            <script>
+                $('#datepicker3').datepicker({
+                    uiLibrary: 'bootstrap'
+                });
+                $('#datepicker4').datepicker({
+                    uiLibrary: 'bootstrap'
+                });
+            </script>
+
+            <input class="btn btn-default" type="submit" value="Show Me">
+
+        </form>
+    </div>
+    <div class="col-md-4">
+        <h2>Favorite Music Genres</h2>
+        <p>Find out the ranking of the favorite music genres of our customers!</p>
+        <form action="GetGenres" method="post">
+            @{
+                if (ViewBag.Message == "304")
+                {
+                    <p style="color: red"> No data found for the given parameters! </p>
+                }
+
+            }
+            Show <input type="text" id="numbers" name="numbers" list="numbers">first
+                 <datalist id="numbers">
+                     <option value="10">
+                     <option value="20">
+                     <option value="30">
+                     <option value="40">
+                     <option value="50">
+                 </datalist>
+            <br>
+            <script>
+                $('#datepicker3').datepicker({
+                    uiLibrary: 'bootstrap'
+                });
+                $('#datepicker4').datepicker({
+                    uiLibrary: 'bootstrap'
+                });
+            </script>
+
+            <input class="btn btn-default" type="submit" value="Show Me">
+
+        </form>
+    </div>
+</div>

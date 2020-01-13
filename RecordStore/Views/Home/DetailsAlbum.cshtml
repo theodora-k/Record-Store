@@ -4,7 +4,7 @@
     ViewBag.Title = "Albums";
 }
 
-<h3>DetailsAlbum</h3>
+   <h3>Album Details</h3>
 
 <p>
     @Html.ActionLink("Create New", "CreateAlbum") |
@@ -38,8 +38,8 @@
             @Html.DisplayFor(modelItem => item.ArtistId)
         </td>
         <td>
-            @Html.ActionLink("Edit", "EditAlbum", new { title=item.Title, albumId=item.AlbumId, artistId=item.ArtistId}) |
-            @Html.ActionLink("Delete", "DeleteAlbum", new { title=item.Title })
+            @Html.ActionLink("Edit", "EditAlbum", new { title=item.Title, albumid=item.AlbumId, artistId=item.ArtistId}) |
+            @Html.ActionLink("Delete", "DeleteAlbum", new { albumid=item.AlbumId })
         </td>
     </tr>
 }

@@ -4,7 +4,7 @@
     ViewBag.Title = "Details";
 }
 
-<h3>Details</h3>
+<h3>Artist Details</h3>
 
   
 <p>
@@ -33,8 +33,8 @@
 
         </td>
         <td>
-            @Html.ActionLink("Edit", "EditArtist", new { name=item.Name, ida=item.ArtistId }) |
-            @Html.ActionLink("Delete", "DeleteArtist", new { name=item.Name })
+            @Html.ActionLink("Edit", "EditArtist", new { name=item.Name, artistid=item.ArtistId}) |
+            @Html.ActionLink("Delete", "DeleteArtist", new { artistid=item.ArtistId })
         </td>
     </tr>
 }

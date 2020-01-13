@@ -11,48 +11,23 @@ using System.Threading.Tasks;
 namespace RecordStore.Controllers
 {
     public class HomeController : Controller
-    {//The Controller that includes the code for the employees view functions
+    {
+        private readonly RecordStoreContext rs;
 
-        static string ancientName = "";
-        static int ancientId;
-
-        private readonly RecordStoreContext _context;
-
-        public HomeController(RecordStoreContext context)
+        public HomeController()
         {
-            _context = context;
+            rs = new RecordStoreContext();
         }
 
         public ActionResult Index()
-        {
-            /*ViewBag.Message = "Tables List";
-
-            RecordStoreContext rs = new RecordStoreContext();
-            //TODO Continue
-            //rs.Set
-
-            var mapping = rs  FindEntityType(typeof(YourEntity)).Relational();
-            var schema = mapping.Schema;
-            var tableName = mapping.TableName;
-
-            List<string> = rs.Database.SqlQuery("SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES ");
-
+        {  
             string sql = @" SELECT TABLE_NAME
                             FROM INFORMATION_SCHEMA.TABLES
                             ;";
 
-            return DataAccess.SqlDataAccess.LoadData<Models.TableModel>(sql); */
+            List<TableModel> data = DataAccess.SqlDataAccess.LoadData<Models.TableModel>(sql);
 
-            //List<> data = Processors.TableProcessor.LoadTables();
-            
-
-            RecordStoreContext rs = new RecordStoreContext();
-            
-            //var mapping = rs.Model.FindEntityType(typeof(YourEntity)).Relational();
-            
-
-
-            return View(rs);
+            return View(data);
         }
 
         public ActionResult About()
@@ -76,56 +51,11 @@ namespace RecordStore.Controllers
             return View();
         }
 
-        /*
-        public ActionResult DetailsArtist(string tableName)
-        {
-            RecordStoreContext rs = new RecordStoreContext();
-            
-            
-            return View();
-        }
-
-        [HttpPost]
-        public ActionResult CreateA(string name)
-        {
-            Processors.ArtistProcessor.createArtist(name);
-
-            return RedirectToAction("DetailsArtist");
-        }
-
-        public ActionResult DeleteArtist(string name)
-        {
-            Processors.ArtistProcessor.deleteArtist(name);
-
-            return RedirectToAction("DetailsArtist");
-
-        }
-        public ActionResult EditArtist(string name)
-        {
-            ancientName = name;
-
-            return View();
-        }
-
-        [HttpPost]
-        public ActionResult EditArtistA(string name)
-        {
-            string name1 = name;
-            string sql = @"select * from Artist where (Name) ='" + ancientName + "'";
-            var ida = SqlDataAccess.LoadData<Artist>(sql);
-
-            Processors.ArtistProcessor.editArtist(name, ida[0].ArtistId);
-
-            return RedirectToAction("DetailsArtist");
-        }
-        */
-
-
         //------------------Albums
 
         public ActionResult DetailsAlbum(string tableName)
         {
-            return View();
+            return View(rs.Albums);
         }
         public ActionResult CreateAlbum(string name)
         {
@@ -133,22 +63,19 @@ namespace RecordStore.Controllers
         }
 
         [HttpPost]
-        public ActionResult CreateAlb(string albumid, string title, string artistId)
+        public ActionResult CreateAlb(string title, string artistId)
         {
-            int id = Int32.Parse(albumid);
 
             int artid = Int32.Parse(artistId);
-            RecordStoreContext rs = new RecordStoreContext();
 
             Album newalb = new Album();
-            newalb.AlbumId = id;
             newalb.Title = title;
             newalb.ArtistId = artid;
 
             rs.Albums.Add(newalb);
-       
+            rs.SaveChanges();
 
-            Response.Write("<script>alert('Data inserted successfully')</script>");
+            Response.Write(@"<script language='javascript'>alert('Data inserted successfully');</script>"); //---------------------------Not working
 
             return RedirectToAction("DetailsAlbum");
         }
@@ -157,9 +84,8 @@ namespace RecordStore.Controllers
         {
             int id = Int32.Parse(albumid);
 
-            RecordStoreContext rs = new RecordStoreContext();
-
             rs.Albums.RemoveRange(rs.Albums.Where(c => c.AlbumId == id));
+            rs.SaveChanges();
 
             Response.Write("<script>alert('Data removed')</script>");
 
@@ -167,39 +93,90 @@ namespace RecordStore.Controllers
 
         }
 
-        public ActionResult EditAlbum(string title, int artistId)
+        public ActionResult EditAlbum(int albumid, string title, int artistId)
         {
-            /*
-             * ancientName = title;
-            ancientId = artistId;
-            */
+            return View();
+        }
+
+        [HttpPost]
+        public ActionResult EditAlb(int albumid, string title, string artistId)
+        {
+            int artid = Int32.Parse(artistId);
+
+            Album newalb = new Album();
+            newalb.AlbumId = albumid;
+            newalb.Title = title;
+            newalb.ArtistId = artid;
+
+            Album albumData = rs.Albums.SingleOrDefault(album => album.AlbumId == albumid);
+
+            rs.Entry(albumData).CurrentValues.SetValues(newalb);
+            rs.SaveChanges();
+
+            Response.Write("<script>alert('Data inserted successfully')</script>");
+
+            return RedirectToAction("DetailsAlbum");
+        }
+
+        //-------- Artist
+        public ActionResult DetailsArtist(string tableName)
+        {
+            return View(rs.Artists);
+        }
+        public ActionResult CreateArtist(string name)
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public ActionResult CreateArt(string name)
+        {
+
+            Artist newEntry = new Artist();
+            newEntry.Name = name;
+
+            rs.Artists.Add(newEntry);
+            rs.SaveChanges();
+
+            Response.Write(@"<script language='javascript'>alert('Data inserted successfully');</script>"); //---------------------------Not working
+
+            return RedirectToAction("DetailsArtist");
+        }
+
+        public ActionResult DeleteArtist(string artistid)
+        {
+            int id = Int32.Parse(artistid);
+
+            rs.Artists.RemoveRange(rs.Artists.Where(c => c.ArtistId == id));
+            rs.SaveChanges();
+
+            Response.Write("<script>alert('Data removed')</script>");
+
+            return RedirectToAction("DetailsArtist");
+
+        }
+
+        public ActionResult EditArtist(int artistId, string name)
+        {
 
             return View();
         }
 
         [HttpPost]
-        public ActionResult EditAlb(string albumid, string title, string artistId)
+        public ActionResult EditArt(int artistid, string name)
         {
-            string name1 = title;
-            int id = Int32.Parse(albumid);
+            Artist newEntry = new Artist();
+            newEntry.ArtistId = artistid;
+            newEntry.Name = name;
 
-            int artid = Int32.Parse(artistId);
-            RecordStoreContext rs = new RecordStoreContext();
+            Artist entryData = rs.Artists.SingleOrDefault(artist => artist.ArtistId == artistid);
 
-            Album newalb = new Album();
-            newalb.AlbumId = id;
-            newalb.Title = title;
-            newalb.ArtistId = artid;
-
-            rs.Albums.Add(newalb);
-
-            Album albumData = rs.Albums.SingleOrDefault(album => album.AlbumId == id);
-
-            rs.Entry(albumData).CurrentValues.SetValues(newalb);
+            rs.Entry(entryData).CurrentValues.SetValues(newEntry);
+            rs.SaveChanges();
 
             Response.Write("<script>alert('Data inserted successfully')</script>");
 
-            return RedirectToAction("DetailsAlbum");
+            return RedirectToAction("DetailsArtist");
         }
     }
 }

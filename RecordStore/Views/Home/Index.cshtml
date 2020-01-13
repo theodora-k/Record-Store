@@ -1,1 +1,25 @@
-﻿
+﻿@model IEnumerable<RecordStore.Models.TableModel>
+
+<h3>Tables</h3>
+
+
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.Table_Name)
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.Table_Name)
+        </td>
+        <td>
+            @Html.ActionLink("Details", "Details"+item.Table_Name, new {  id=item.Table_Name}) 
+        </td>
+    </tr>
+}
+
+</table>

@@ -496,5 +496,336 @@ namespace RecordStore.Controllers
             return RedirectToAction("DetailsInvoice");
         }
 
+        //------------ Track
+
+        public ActionResult DetailsTrack(string tableName)
+        {
+            return View(rs.Tracks);
+        }
+        public ActionResult CreateTrack()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public ActionResult CreateTra(string name, int albumid, int mediatypeid, int genreid, string composer, int milliseconds, int bytes, double unitprice)
+        {
+
+            Track newEntry = new Track();
+            //newEntry.CustomerId = customerid;
+            newEntry.Name = name;
+            newEntry.AlbumId = albumid;
+            newEntry.MediaTypeId = mediatypeid;
+            newEntry.GenreId = genreid;
+            newEntry.Composer = composer;
+            newEntry.Milliseconds = milliseconds;
+            newEntry.Bytes = bytes;
+            newEntry.UnitPrice = unitprice;
+
+            rs.Tracks.Add(newEntry);
+            rs.SaveChanges();
+
+            Response.Write(@"<script language='javascript'>alert('Data inserted successfully');</script>"); //---------------------------Not working
+
+            return RedirectToAction("DetailsTrack");
+        }
+
+        public ActionResult DeleteTrack(string trackid)
+        {
+            int id = Int32.Parse(trackid);
+
+            rs.Tracks.RemoveRange(rs.Tracks.Where(c => c.TrackId == id));
+            rs.SaveChanges();
+
+            Response.Write("<script>alert('Data removed')</script>");
+
+            return RedirectToAction("DetailsTrack");
+
+        }
+
+        public ActionResult EditTrack(int trackid, string name, int albumid, int mediatypeid, int genreid, 
+        string composer, int milliseconds, int bytes, double unitprice)
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public ActionResult EditTra(int trackid, string name, int albumid, int mediatypeid, int genreid, 
+        string composer, int milliseconds, int bytes, double unitprice)
+        {
+            Track newEntry = new Track();
+            newEntry.TrackId = trackid;
+            newEntry.Name = name;
+            newEntry.AlbumId = albumid;
+            newEntry.MediaTypeId = mediatypeid;
+            newEntry.GenreId = genreid;
+            newEntry.Composer = composer;
+            newEntry.Milliseconds = milliseconds;
+            newEntry.Bytes = bytes;
+            newEntry.UnitPrice = unitprice;
+
+            Track entryData = rs.Tracks.SingleOrDefault(track => track.TrackId == trackid);
+
+            rs.Entry(entryData).CurrentValues.SetValues(newEntry);
+            rs.SaveChanges();
+
+            Response.Write("<script>alert('Data inserted successfully')</script>");
+
+            return RedirectToAction("DetailsTrack");
+        }
+
+        //------------ PlaylistTrack
+
+        public ActionResult DetailsPlaylistTrack(string tableName)
+        {
+            return View(rs.PlaylistTracks);
+        }
+        public ActionResult CreatePlaylistTrack()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public ActionResult CreatePlayTrack(int trackid)
+        {
+
+            PlaylistTrack newEntry = new PlaylistTrack();
+            //newEntry.CustomerId = customerid;
+            newEntry.TrackId = trackid;
+
+            rs.PlaylistTracks.Add(newEntry);
+            rs.SaveChanges();
+
+            Response.Write(@"<script language='javascript'>alert('Data inserted successfully');</script>"); //---------------------------Not working
+
+            return RedirectToAction("DetailsPlaylistTrack");
+        }
+
+        public ActionResult DeletePlaylistTrack(int playlistid)
+        {
+            int id = Int32.Parse(playlistid);
+
+            rs.PlaylistTracks.RemoveRange(rs.PlaylistTracks.Where(c => c.PlaylistId == id));
+            rs.SaveChanges();
+
+            Response.Write("<script>alert('Data removed')</script>");
+
+            return RedirectToAction("DetailsPlaylistTrack");
+
+        }
+
+        public ActionResult EditPlaylistTrack(int playlistid, int trackid)
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public ActionResult EditPlayTrack(int playlistid, int trackid)
+        {
+            PlaylistTrack newEntry = new PlaylistTrack();
+            newEntry.PlaylistId = playlistid;
+            newEntry.TrackId = trackid;
+
+            PlaylistTrack entryData = rs.PlaylistTracks.SingleOrDefault(playlistTrack => playlistTrack.PlaylistId == playlistid);
+
+            rs.Entry(entryData).CurrentValues.SetValues(newEntry);
+            rs.SaveChanges();
+
+            Response.Write("<script>alert('Data inserted successfully')</script>");
+
+            return RedirectToAction("DetailsPlaylistTrack");
+        }
+
+        //------------ Playlist
+
+        public ActionResult DetailsPlaylist(string tableName)
+        {
+            return View(rs.Playlists);
+        }
+        public ActionResult CreatePlaylist()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public ActionResult CreatePlay(int name)
+        {
+
+            Playlist newEntry = new Playlist();
+            //newEntry.CustomerId = customerid;
+            newEntry.Name = name;
+
+            rs.Playlists.Add(newEntry);
+            rs.SaveChanges();
+
+            Response.Write(@"<script language='javascript'>alert('Data inserted successfully');</script>"); //---------------------------Not working
+
+            return RedirectToAction("DetailsPlaylist");
+        }
+
+        public ActionResult DeletePlaylist(int playlistid)
+        {
+            int id = Int32.Parse(playlistid);
+
+            rs.Playlists.RemoveRange(rs.Playlists.Where(c => c.PlaylistId == id));
+            rs.SaveChanges();
+
+            Response.Write("<script>alert('Data removed')</script>");
+
+            return RedirectToAction("DetailsPlaylist");
+
+        }
+
+        public ActionResult EditPlaylist(int playlistid, int name)
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public ActionResult EditPlay(int playlistid, int name)
+        {
+            Playlist newEntry = new Playlist();
+            newEntry.PlaylistId = playlistid;
+            newEntry.Name = name;
+
+            Playlist entryData = rs.Playlists.SingleOrDefault(playlist => playlist.PlaylistId == playlistid);
+
+            rs.Entry(entryData).CurrentValues.SetValues(newEntry);
+            rs.SaveChanges();
+
+            Response.Write("<script>alert('Data inserted successfully')</script>");
+
+            return RedirectToAction("DetailsPlaylist");
+        }
+
+        //------------ MediaType
+
+        public ActionResult DetailsMediaType(string tableName)
+        {
+            return View(rs.MediaTypes);
+        }
+        public ActionResult CreateMediaType()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public ActionResult CreateMedia(int name)
+        {
+
+            MediaType newEntry = new MediaType();
+            //newEntry.CustomerId = customerid;
+            newEntry.Name = name;
+
+            rs.MediaTypes.Add(newEntry);
+            rs.SaveChanges();
+
+            Response.Write(@"<script language='javascript'>alert('Data inserted successfully');</script>"); //---------------------------Not working
+
+            return RedirectToAction("DetailsMediaType");
+        }
+
+        public ActionResult DeleteMediaType(int mediatypeid)
+        {
+            int id = Int32.Parse(mediatypeid);
+
+            rs.MediaTypes.RemoveRange(rs.MediaTypes.Where(c => c.MediaTypeId == id));
+            rs.SaveChanges();
+
+            Response.Write("<script>alert('Data removed')</script>");
+
+            return RedirectToAction("DetailsMediaType");
+
+        }
+
+        public ActionResult EditMediaType(int mediatypeid, int name)
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public ActionResult EditMedia(int mediatypeid, int name)
+        {
+            MediaType newEntry = new MediaType();
+            newEntry.MediaTypeId = mediatypeid;
+            newEntry.Name = name;
+
+            MediaType entryData = rs.MediaTypes.SingleOrDefault(mediatype => mediatype.MediaTypeId == mediatypeid);
+
+            rs.Entry(entryData).CurrentValues.SetValues(newEntry);
+            rs.SaveChanges();
+
+            Response.Write("<script>alert('Data inserted successfully')</script>");
+
+            return RedirectToAction("DetailsMediaType");
+        }
+
+        //------------ InvoiceLine
+
+        public ActionResult DetailsInvoiceLine(string tableName)
+        {
+            return View(rs.InvoiceLines);
+        }
+        public ActionResult CreateInvoiceLine()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public ActionResult CreateInvoiceL(int invoiceid, int trackid, double unitprice, int quantity)
+        {
+
+            InvoiceLine newEntry = new InvoiceLine();
+            //newEntry.CustomerId = customerid;
+            newEntry.InvoiceId = invoiceid;
+            newEntry.TrackId = trackid;
+            newEntry.UnitPrice = unitprice;
+            newEntry.Quantity = quantity;
+
+            rs.InvoiceLines.Add(newEntry);
+            rs.SaveChanges();
+
+            Response.Write(@"<script language='javascript'>alert('Data inserted successfully');</script>"); //---------------------------Not working
+
+            return RedirectToAction("DetailsInvoiceLine");
+        }
+
+        public ActionResult DeleteInvoiceLine(int invoicelineid)
+        {
+            int id = Int32.Parse(invoicelineid);
+
+            rs.InvoiceLines.RemoveRange(rs.InvoiceLines.Where(c => c.InvoiceLineId == id));
+            rs.SaveChanges();
+
+            Response.Write("<script>alert('Data removed')</script>");
+
+            return RedirectToAction("DetailsInvoiceLine");
+
+        }
+
+        public ActionResult EditInvoiceLine(int invoicelineid, int invoiceid, int trackid, double unitprice, int quantity)
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public ActionResult EditInvoiceL(int invoicelineid, int invoiceid, int trackid, double unitprice, int quantity)
+        {
+            InvoiceLine newEntry = new InvoiceLine();
+            newEntry.InvoiceLineId = invoicelineid;
+            newEntry.InvoiceId = invoiceid;
+            newEntry.TrackId = trackid;
+            newEntry.UnitPrice = unitprice;
+            newEntry.Quantity = quantity;
+
+            InvoiceLine entryData = rs.InvoiceLines.SingleOrDefault(invoiceline => invoiceline.InvoiceLineId == invoicelineid);
+
+            rs.Entry(entryData).CurrentValues.SetValues(newEntry);
+            rs.SaveChanges();
+
+            Response.Write("<script>alert('Data inserted successfully')</script>");
+
+            return RedirectToAction("DetailsInvoiceLine");
+        }
     }
 }

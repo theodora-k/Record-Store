@@ -1,0 +1,51 @@
+﻿@model IEnumerable<RecordStore.Models.InvoiceLine>
+
+@{
+    ViewBag.Title = "Details";
+}
+    <h3>Invoice Line Details</h3>
+
+<p>
+    @Html.ActionLink("Create New", "CreateInvoiceLine")|
+    @Html.ActionLink("Back to List", "Index")
+</p>
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.InvoiceId)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.TrackId)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.UnitPrice)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Quantity)
+        </th>
+        <th></th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.InvoiceId)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.TrackId)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.UnitPrice)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Quantity)
+            </td>
+            <td>
+                @Html.ActionLink("Edit", "EditInvoiceLine", new { invoicelineid = item.InvoiceLineId, invoiceid = item.InvoiceId, trackid = item.TrackId, unitprice = item.UnitPrice, quantity = item.Quantity }) |
+                @Html.ActionLink("Delete", "DeleteInvoiceLine", new { invoicelineid = item.InvoiceLineId })
+            </td>
+        </tr>
+    }
+
+</table>

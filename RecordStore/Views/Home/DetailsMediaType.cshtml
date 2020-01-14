@@ -1,0 +1,33 @@
+﻿@model IEnumerable<RecordStore.Models.MediaType>
+
+@{
+    ViewBag.Title = "Details";
+}
+    <h3>Media Type Details</h3>
+
+<p>
+    @Html.ActionLink("Create New", "CreateMediaType")|
+    @Html.ActionLink("Back to List", "Index")
+</p>
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.Name)
+        </th>
+        <th></th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Name)
+            </td>
+            <td>
+                @Html.ActionLink("Edit", "EditMediaType", new { mediatypeid = item.MediaTypeId, name = item.Name }) |
+                @Html.ActionLink("Delete", "DeleteMediaType", new { mediatypeid = item.MediaTypeId })
+            </td>
+        </tr>
+    }
+
+</table>

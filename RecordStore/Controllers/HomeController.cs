@@ -508,7 +508,7 @@ namespace RecordStore.Controllers
         }
 
         [HttpPost]
-        public ActionResult CreateTra(string name, int albumid, int mediatypeid, int genreid, string composer, int milliseconds, int bytes, double unitprice)
+        public ActionResult CreateTra(string name, int albumid, int mediatypeid, int genreid, string composer, int milliseconds, int bytes, decimal unitprice)
         {
 
             Track newEntry = new Track();
@@ -544,14 +544,14 @@ namespace RecordStore.Controllers
         }
 
         public ActionResult EditTrack(int trackid, string name, int albumid, int mediatypeid, int genreid, 
-        string composer, int milliseconds, int bytes, double unitprice)
+        string composer, int milliseconds, int bytes, decimal unitprice)
         {
             return View();
         }
 
         [HttpPost]
         public ActionResult EditTra(int trackid, string name, int albumid, int mediatypeid, int genreid, 
-        string composer, int milliseconds, int bytes, double unitprice)
+        string composer, int milliseconds, int bytes, decimal unitprice)
         {
             Track newEntry = new Track();
             newEntry.TrackId = trackid;
@@ -601,11 +601,11 @@ namespace RecordStore.Controllers
             return RedirectToAction("DetailsPlaylistTrack");
         }
 
-        public ActionResult DeletePlaylistTrack(int playlistid)
+        public ActionResult DeletePlaylistTrack(int playlistid, int trackid)
         {
-            int id = Int32.Parse(playlistid);
+            //int id = Int32.Parse(playlistid);
 
-            rs.PlaylistTracks.RemoveRange(rs.PlaylistTracks.Where(c => c.PlaylistId == id));
+            rs.PlaylistTracks.RemoveRange(rs.PlaylistTracks.Where(c => c.PlaylistId == playlistid && c.TrackId == trackid));
             rs.SaveChanges();
 
             Response.Write("<script>alert('Data removed')</script>");
@@ -648,7 +648,7 @@ namespace RecordStore.Controllers
         }
 
         [HttpPost]
-        public ActionResult CreatePlay(int name)
+        public ActionResult CreatePlay(string name)
         {
 
             Playlist newEntry = new Playlist();
@@ -665,9 +665,9 @@ namespace RecordStore.Controllers
 
         public ActionResult DeletePlaylist(int playlistid)
         {
-            int id = Int32.Parse(playlistid);
+            //int id = Int32.Parse(playlistid);
 
-            rs.Playlists.RemoveRange(rs.Playlists.Where(c => c.PlaylistId == id));
+            rs.Playlists.RemoveRange(rs.Playlists.Where(c => c.PlaylistId == playlistid));
             rs.SaveChanges();
 
             Response.Write("<script>alert('Data removed')</script>");
@@ -676,13 +676,13 @@ namespace RecordStore.Controllers
 
         }
 
-        public ActionResult EditPlaylist(int playlistid, int name)
+        public ActionResult EditPlaylist(int playlistid, string name)
         {
             return View();
         }
 
         [HttpPost]
-        public ActionResult EditPlay(int playlistid, int name)
+        public ActionResult EditPlay(int playlistid, string name)
         {
             Playlist newEntry = new Playlist();
             newEntry.PlaylistId = playlistid;
@@ -710,7 +710,7 @@ namespace RecordStore.Controllers
         }
 
         [HttpPost]
-        public ActionResult CreateMedia(int name)
+        public ActionResult CreateMedia(string name)
         {
 
             MediaType newEntry = new MediaType();
@@ -727,9 +727,9 @@ namespace RecordStore.Controllers
 
         public ActionResult DeleteMediaType(int mediatypeid)
         {
-            int id = Int32.Parse(mediatypeid);
+            //int id = Int32.Parse(mediatypeid);
 
-            rs.MediaTypes.RemoveRange(rs.MediaTypes.Where(c => c.MediaTypeId == id));
+            rs.MediaTypes.RemoveRange(rs.MediaTypes.Where(c => c.MediaTypeId == mediatypeid));
             rs.SaveChanges();
 
             Response.Write("<script>alert('Data removed')</script>");
@@ -738,13 +738,13 @@ namespace RecordStore.Controllers
 
         }
 
-        public ActionResult EditMediaType(int mediatypeid, int name)
+        public ActionResult EditMediaType(int mediatypeid, string name)
         {
             return View();
         }
 
         [HttpPost]
-        public ActionResult EditMedia(int mediatypeid, int name)
+        public ActionResult EditMedia(int mediatypeid, string name)
         {
             MediaType newEntry = new MediaType();
             newEntry.MediaTypeId = mediatypeid;
@@ -772,7 +772,7 @@ namespace RecordStore.Controllers
         }
 
         [HttpPost]
-        public ActionResult CreateInvoiceL(int invoiceid, int trackid, double unitprice, int quantity)
+        public ActionResult CreateInvoiceL(int invoiceid, int trackid, decimal? unitprice, int quantity)
         {
 
             InvoiceLine newEntry = new InvoiceLine();
@@ -792,9 +792,9 @@ namespace RecordStore.Controllers
 
         public ActionResult DeleteInvoiceLine(int invoicelineid)
         {
-            int id = Int32.Parse(invoicelineid);
+            //int id = Int32.Parse(invoicelineid);
 
-            rs.InvoiceLines.RemoveRange(rs.InvoiceLines.Where(c => c.InvoiceLineId == id));
+            rs.InvoiceLines.RemoveRange(rs.InvoiceLines.Where(c => c.InvoiceLineId == invoicelineid));
             rs.SaveChanges();
 
             Response.Write("<script>alert('Data removed')</script>");
@@ -803,13 +803,13 @@ namespace RecordStore.Controllers
 
         }
 
-        public ActionResult EditInvoiceLine(int invoicelineid, int invoiceid, int trackid, double unitprice, int quantity)
+        public ActionResult EditInvoiceLine(int invoicelineid, int invoiceid, int trackid, decimal? unitprice, int quantity)
         {
             return View();
         }
 
         [HttpPost]
-        public ActionResult EditInvoiceL(int invoicelineid, int invoiceid, int trackid, double unitprice, int quantity)
+        public ActionResult EditInvoiceL(int invoicelineid, int invoiceid, int trackid, decimal? unitprice, int quantity)
         {
             InvoiceLine newEntry = new InvoiceLine();
             newEntry.InvoiceLineId = invoicelineid;

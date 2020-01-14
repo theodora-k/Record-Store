@@ -1,0 +1,33 @@
+﻿@model IEnumerable<RecordStore.Models.PlaylistTrack>
+
+@{
+    ViewBag.Title = "Details";
+}
+    <h3>Playlist Track Details</h3>
+
+<p>
+    @Html.ActionLink("Create New", "CreatePlaylistTrack")|
+    @Html.ActionLink("Back to List", "Index")
+</p>
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.TrackId)
+        </th>
+        <th></th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.TrackId)
+            </td>
+            <td>
+                @Html.ActionLink("Edit", "EditPlaylistTrack", new { playlistid = item.PlaylistId, trackid = item.TrackId }) |
+                @Html.ActionLink("Delete", "DeletePlaylistTrack", new { trackid = item.TrackId, playlistid = item.PlaylistId })
+            </td>
+        </tr>
+    }
+
+</table>

@@ -446,6 +446,21 @@
     <Content Include="Views\Home\DetailsInvoice.cshtml" />
     <Content Include="Views\Home\CreateInvoice.cshtml" />
     <Content Include="Views\Home\EditInvoice.cshtml" />
+    <Content Include="Views\Home\DetailsTrack.cshtml" />
+    <Content Include="Views\Home\CreateTrack.cshtml" />
+    <Content Include="Views\Home\EditTrack.cshtml" />
+    <Content Include="Views\Home\DetailsPlaylistTrack.cshtml" />
+    <Content Include="Views\Home\CreatePlaylistTrack.cshtml" />
+    <Content Include="Views\Home\EditPlaylistTrack.cshtml" />
+    <Content Include="Views\Home\DetailsPlaylist.cshtml" />
+    <Content Include="Views\Home\CreatePlaylist.cshtml" />
+    <Content Include="Views\Home\EditPlaylist.cshtml" />
+    <Content Include="Views\Home\DetailsMediaType.cshtml" />
+    <Content Include="Views\Home\CreateMediaType.cshtml" />
+    <Content Include="Views\Home\EditMediaType.cshtml" />
+    <Content Include="Views\Home\DetailsInvoiceLine.cshtml" />
+    <Content Include="Views\Home\CreateInvoiceLine.cshtml" />
+    <Content Include="Views\Home\EditInvoiceLine.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

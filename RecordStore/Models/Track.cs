@@ -15,7 +15,7 @@ namespace RecordStore.Models
         public string Composer { get; set; }
         public int Milliseconds { get; set; }
         public int Bytes { get; set; }
-        public double UnitPrice { get; set; }
+        public decimal UnitPrice { get; set; }
 
     }
 }

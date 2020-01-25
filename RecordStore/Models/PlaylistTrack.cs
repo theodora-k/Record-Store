@@ -10,8 +10,9 @@ namespace RecordStore.Models
     public class PlaylistTrack
     {
 
-        [Key]
+        [Key, Column(Order = 1)]
         public int PlaylistId { get; set; }
+        [Key, Column(Order = 2)]
         public int TrackId { get; set; }
     }
 }

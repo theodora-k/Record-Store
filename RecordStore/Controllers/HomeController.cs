@@ -81,11 +81,14 @@ namespace RecordStore.Controllers
             return RedirectToAction("DetailsAlbum");
         }
 
+
+
         public ActionResult DeleteAlbum(string albumid)
         {
             int id = Int32.Parse(albumid);
-
+            rs.Tracks.RemoveRange(rs.Tracks.Where(c => c.AlbumId == id));
             rs.Albums.RemoveRange(rs.Albums.Where(c => c.AlbumId == id));
+            
             rs.SaveChanges();
 
             Response.Write("<script>alert('Data removed')</script>");
@@ -149,6 +152,8 @@ namespace RecordStore.Controllers
             int id = Int32.Parse(artistid);
 
             rs.Artists.RemoveRange(rs.Artists.Where(c => c.ArtistId == id));
+            rs.Albums.RemoveRange(rs.Albums.Where(c => c.ArtistId == id));
+            
             rs.SaveChanges();
 
             Response.Write("<script>alert('Data removed')</script>");
@@ -311,6 +316,7 @@ namespace RecordStore.Controllers
             int id = Int32.Parse(customerid);
 
             rs.Customers.RemoveRange(rs.Customers.Where(c => c.CustomerId == id));
+            rs.Invoices.RemoveRange(rs.Invoices.Where(c => c.CustomerId == id));
             rs.SaveChanges();
 
             Response.Write("<script>alert('Data removed')</script>");
@@ -385,6 +391,7 @@ namespace RecordStore.Controllers
             int id = Int32.Parse(genreid);
 
             rs.Genres.RemoveRange(rs.Genres.Where(c => c.GenreId == id));
+            rs.Tracks.RemoveRange(rs.Tracks.Where(c => c.GenreId == id));
             rs.SaveChanges();
 
             Response.Write("<script>alert('Data removed')</script>");
@@ -455,6 +462,7 @@ namespace RecordStore.Controllers
             int id = Int32.Parse(invoiceid);
 
             rs.Invoices.RemoveRange(rs.Invoices.Where(c => c.InvoiceId == id));
+            rs.InvoiceLines.RemoveRange(rs.InvoiceLines.Where(c => c.InvoiceId == id));
             rs.SaveChanges();
 
             Response.Write("<script>alert('Data removed')</script>");
@@ -530,11 +538,11 @@ namespace RecordStore.Controllers
             return RedirectToAction("DetailsTrack");
         }
 
-        public ActionResult DeleteTrack(string trackid)
+        public ActionResult DeleteTrack(int trackid)
         {
-            int id = Int32.Parse(trackid);
+            //int id = Int32.Parse(trackid);
 
-            rs.Tracks.RemoveRange(rs.Tracks.Where(c => c.TrackId == id));
+            rs.Tracks.RemoveRange(rs.Tracks.Where(c => c.TrackId == trackid));
             rs.SaveChanges();
 
             Response.Write("<script>alert('Data removed')</script>");
@@ -730,6 +738,7 @@ namespace RecordStore.Controllers
             //int id = Int32.Parse(mediatypeid);
 
             rs.MediaTypes.RemoveRange(rs.MediaTypes.Where(c => c.MediaTypeId == mediatypeid));
+            rs.Tracks.RemoveRange(rs.Tracks.Where(c => c.MediaTypeId == mediatypeid));
             rs.SaveChanges();
 
             Response.Write("<script>alert('Data removed')</script>");

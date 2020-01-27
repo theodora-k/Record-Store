@@ -156,9 +156,11 @@ namespace RecordStore.Controllers
             
             rs.SaveChanges();
 
+            ViewBag.Message = "Record was succesfully deleted.";
+
             Response.Write("<script>alert('Data removed')</script>");
 
-            return RedirectToAction("DetailsArtist");
+            return View("DetailsArtist");
 
         }
 

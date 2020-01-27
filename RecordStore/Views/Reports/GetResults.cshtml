@@ -6,10 +6,18 @@
     <title>Your Query Results</title>
 </head>
 <body>
+    <!--TODO Fix correct table position-->
     <div>
         <h4>@ViewBag.Title</h4>
         <hr />
         <dl class="dl-horizontal">
+            <dt>
+                @ViewBag.Message
+            </dt>
+
+            <dd>
+
+            </dd>
             @foreach (var item in ViewData)
             {
                 <dt>
@@ -20,10 +28,10 @@
                     @item.Key
                 </dd>
             }
-            </dl>
+        </dl>
     </div>
     <p>
-        @Html.ActionLink("Back to Reports", "Report","Reports")
+        @Html.ActionLink("Back to Reports", "Report", "Reports")
     </p>
 </body>
 </html>

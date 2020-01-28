@@ -19,7 +19,7 @@ namespace RecordStore.Controllers
             rs = new RecordStoreContext();
         }
 
-        public ActionResult Index()
+        public ActionResult Manage()
         {  
             string sql = @" SELECT TABLE_NAME
                             FROM INFORMATION_SCHEMA.TABLES
@@ -30,19 +30,13 @@ namespace RecordStore.Controllers
             return View(data);
         }
 
-        public ActionResult About()
+        public ActionResult Index()
         {
             ViewBag.Message = "Your application description page.";
 
             return View();
         }
 
-        public ActionResult Contact()
-        {
-            ViewBag.Message = "Your contact page.";
-
-            return View();
-        }
 
         public ActionResult Choice()
         {

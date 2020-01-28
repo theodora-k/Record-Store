@@ -27,6 +27,12 @@ namespace RecordStore
             routes.IgnoreRoute("{resource}.axd/{*pathInfo}");
 
             routes.MapRoute(
+                 "TopGenres",                                       // Route name
+                 "{controller}/{action}/{id}",                    // URL w/ params
+                     new { controller = "Reports", action = "GetGenres", id = "" }  // Param defaults
+                   );
+
+            routes.MapRoute(
                 "TopArtists",                                       // Route name
                 "{controller}/{action}/{id}",                    // URL w/ params
                 new { controller = "Reports", action = "GetArtists", id = "" }  // Param defaults

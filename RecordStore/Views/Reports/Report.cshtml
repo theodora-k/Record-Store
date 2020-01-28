@@ -8,7 +8,7 @@
     <div class="col-md-4">
         <h2>Top-selling Artists</h2>
         <p>
-            Retrieve artists who have sold an amount of record copies over a set threshold for a specific timespan.
+            Retrieve artists who have sold the biggest amount of record copies for a specific timespan.
         </p>
         <form action="GetArtists" method="post">
             @{
@@ -28,15 +28,18 @@
 
             }
 
-            Record Amount Threshold (Integer) : <input id="xnumber" name="xnumber" type="text" class="numbersOnly" width="200" /><br>
+            Rank Range of Top-Selling Artists (Integer) : <input id="xnumber" name="xnumber" type="text" class="numbersOnly" width="200" /> 
+            <br><br>
             Date from: <input id="datepicker1" name="datepicker1" type="text" width="200" /><br>
             Date to: <input id="datepicker2" name="datepicker2" type="text" width="200"><br>
             <script>
                 $('#datepicker1').datepicker({
-                    uiLibrary: 'bootstrap'
+                    uiLibrary: 'bootstrap',
+                    dateFormat: 'yyyy-mm-dd'
                 });
                 $('#datepicker2').datepicker({
-                    uiLibrary: 'bootstrap'
+                    uiLibrary: 'bootstrap',
+                    dateFormat: 'yyyy-mm-dd'
                 });
                 jQuery('.numbersOnly').keyup(function () {
                     this.value = this.value.replace(/[^0-9\.]/g, '');
@@ -67,8 +70,8 @@
                 }
 
             }
-            Date from: <input id="datepicker3" width="200" /><br>
-            Date to: <input id="datepicker4" width="200"><br>
+            Date from: <input id="datepicker3"  name="datepicker3" type="text" width="200" /><br>
+            Date to: <input id="datepicker4" name="datepicker4" type="text" width="200"><br>
             <script>
                 $('#datepicker3').datepicker({
                     uiLibrary: 'bootstrap'
@@ -85,7 +88,7 @@
     <div class="col-md-4">
         <h2>Favorite Music Genres</h2>
         <p>Find out the ranking of the favorite music genres of our customers!</p>
-        <form action="GetGenres" method="post">
+        <form id="genreForm" action="GetGenres" method="post">
             @{
                 if (ViewBag.Message == "304")
                 {
@@ -95,18 +98,20 @@
                 }
 
             }
-            Show <input type="text" id="numbers" name="numbers" list="numbers" width="100" > first
-            <datalist id="numbers">
-                <option value="10">
-                <option value="20">
-                <option value="30">
-                <option value="40">
-                <option value="50">
-            </datalist>
+            <!--Show me:
+            <br><br>
+            <select name="numbers" id="numbers" form="genreForm">
+                <option value="10">Top 10</option>
+                <option value="20">Top 20</option>
+                <option value="50">Top 50</option>
+                <option value="100">Top 100</option>
+                <option value="all">All</option>
+            </select> -->
             <br>
-
+            <br>
             <input class="btn btn-default" type="submit" value="Show Me">
 
         </form>
+
     </div>
 </div>

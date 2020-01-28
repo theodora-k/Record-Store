@@ -423,9 +423,9 @@
     <Content Include="Views\Shared\_Layout.cshtml" />
     <Content Include="Views\Reports\Report.cshtml" />
     <Content Include="Views\Home\Contact.cshtml" />
-    <Content Include="Views\Home\Manage.cshtml" />
+    <Content Include="Views\Home\Manage2.cshtml" />
     <Content Include="Views\Reports\GetResults.cshtml" />
-    <Content Include="Views\Home\About.cshtml" />
+    <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Views\Home\CreateAlbum.cshtml" />
     <Content Include="Views\Home\CreateArtist.cshtml" />
     <Content Include="Views\Home\DetailsAlbum.cshtml" />
@@ -433,7 +433,7 @@
     <Content Include="Views\Home\EditAlbum.cshtml" />
     <Content Include="Views\Home\EditArtist.cshtml" />
     <Content Include="Views\Home\View.cshtml" />
-    <Content Include="Views\Home\Index.cshtml" />
+    <Content Include="Views\Home\Manage.cshtml" />
     <Content Include="Views\Home\CreateCustomer.cshtml" />
     <Content Include="Views\Home\DetailsCustomer.cshtml" />
     <Content Include="Views\Home\EditCustomer.cshtml" />

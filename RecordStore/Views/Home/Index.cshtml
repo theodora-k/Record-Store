@@ -1,25 +1,25 @@
-﻿@model IEnumerable<RecordStore.Models.TableModel>
-
-<h3>Tables</h3>
-
-
-<table class="table">
-    <tr>
-        <th>
-            @Html.DisplayNameFor(model => model.Table_Name)
-        </th>
-        <th></th>
-    </tr>
-
-@foreach (var item in Model) {
-    <tr>
-        <td>
-            @Html.DisplayFor(modelItem => item.Table_Name)
-        </td>
-        <td>
-            @Html.ActionLink("Details", "Details"+item.Table_Name, new {  id=item.Table_Name}) 
-        </td>
-    </tr>
+﻿@{
+    ViewBag.Title = "Welcome to Record Store!";
 }
+<br>
+     <h2>@ViewBag.Title</h2>
+        <br>
+        <img src="recordstorebig.png"><br>
+        <p>
+            Through the <b>Record Store Admin Panel</b>, you are able to manage all of the Database Tables, as well as retrieve
+            statistics regarding user preferences about favorite artists, songs, and music genres.
+        </p>
 
-</table>
+        <div class="row">
+            <div class="col-md-4">
+                <h2>Manage</h2>
+                <p>View, Edit and Delete Database Records from each table.</p>
+                <p class="btn btn-default">@Html.ActionLink("Go", "Manage", "Home")</p>
+            </div>
+            <div class="col-md-4">
+                <h2>Reports</h2>
+                <p>Generate statistics by running query reports in the Record Store Database.</p>
+                <p class="btn btn-default">@Html.ActionLink("Go", "Report", "Reports")</p>
+                </p>
+            </div>
+        </div>

@@ -17,19 +17,28 @@ namespace RecordStore.Controllers
             return View();
         }
 
-
         [HttpPost]
         public ActionResult GetArtists(string xnumber, string datepicker1, string datepicker2)
         {
             CultureInfo provider = CultureInfo.InvariantCulture;
-            DateTime fromdate = DateTime.ParseExact(datepicker1, "d", provider);
-            DateTime todate = DateTime.ParseExact(datepicker2, "d", provider);
-            int X = Int32.Parse(xnumber);
+            DateTime fromdate, todate;
+            int X;
+            if (!xnumber.Equals(null))
+            {
+                X = Int32.Parse(xnumber);
+            }
+            else
+            {
+                X = 0;
+            }
 
-            //1st case: no valid parameters entered 
+            //1st case: no valid parameters entered      
             //for X, we check for null because the script automatically 
             //erases any text entered that is not a number
-            if ((X.Equals(null) || X <= 0)  && (fromdate.Equals(null) || todate.Equals(null)))
+            //XOR Comparison for checking if only one of the values is entered
+            bool x_ok = (X > 0), d1_ok = !(datepicker1 == "") , d2_ok = !(datepicker2 == "");
+
+            if (!((x_ok || d1_ok ) && (d1_ok || d2_ok) && (d2_ok || x_ok)))
             {
                 //missing parameters warning
                 ViewBag.Message = "101";
@@ -39,33 +48,38 @@ namespace RecordStore.Controllers
             else
             {
                 RecordStoreContext rs = new RecordStoreContext();
-                IQueryable<Invoice> invoice_ids = null;
+                List<Invoice> invoice_ids = null;
                 bool x_entered = true;
                 //2nd case: Only X entered with from date
-                if (X > 0 && !(fromdate.Equals(null)) && todate.Equals(null))
+                if (X > 0 && d1_ok && !d2_ok)
                 {
-                    invoice_ids = from invoice in rs.Invoices
-                                  where invoice.InvoiceDate >= fromdate 
-                                  select invoice;
+                    String date1 = (DateTime.ParseExact(datepicker1, "mm/dd/yyyy", provider)).ToString("yyyy-mm-dd") + " 00:00:00.000";
+                    fromdate = DateTime.ParseExact(date1, "yyyy-MM-dd hh:mm:ss.fff", provider);
+                    invoice_ids = rs.Invoices.Where(inv => inv.InvoiceDate >= fromdate).ToList();
+
                     ViewBag.Title = "First " + X + " top-selling artists from " + datepicker1 ;
                 }
                 //3rd case: Only X entered with to date
-                else if (X > 0 && fromdate.Equals(null) && !(todate.Equals(null)))
+                else if (X > 0 && !d1_ok && d2_ok)
                 {
-                    invoice_ids = from invoice in rs.Invoices
-                                  where invoice.InvoiceDate < todate
-                                  select invoice;
+                    String date2 = (DateTime.ParseExact(datepicker2, "mm/dd/yyyy", provider)).ToString("yyyy-mm-dd") + " 00:00:00.000";
+                    todate = DateTime.ParseExact(date2, "yyyy-MM-dd hh:mm:ss.fff", provider);
+                    invoice_ids = rs.Invoices.Where(inv => inv.InvoiceDate < todate).ToList();
+
                     ViewBag.Title = "First " + X + " top-selling artists up to " + datepicker2;
 
                 }
                 //4th case: both dates entered
-                else if (!(fromdate.Equals(null)) && !(todate.Equals(null)))
+                else if (d1_ok && d2_ok)
                 {
+                    String date1 = (DateTime.ParseExact(datepicker1, "mm/dd/yyyy", provider)).ToString("yyyy-mm-dd") + " 00:00:00.000";
+                    String date2 = (DateTime.ParseExact(datepicker2, "mm/dd/yyyy", provider)).ToString("yyyy-mm-dd") + " 00:00:00.000";
+                    fromdate = DateTime.ParseExact(date1, "yyyy-MM-dd hh:mm:ss.fff", provider);
+                    todate = DateTime.ParseExact(date2, "yyyy-MM-dd hh:mm:ss.fff", provider);
                     //we will need to iterate through the same amount of invoices whether X is entered or not
-                    invoice_ids = from invoice in rs.Invoices
-                                  where invoice.InvoiceDate >= fromdate  && invoice.InvoiceDate < todate
-                                  select invoice;
-                    if (X.Equals(null) || X <= 0)
+                    invoice_ids = rs.Invoices.Where(inv => (inv.InvoiceDate > fromdate && inv.InvoiceDate < todate)).ToList();
+
+                    if (X <= 0)
                     {
                         x_entered = false;
                         ViewBag.Title = "All top-selling artists from " + datepicker1 + " to " + datepicker2;
@@ -80,7 +94,7 @@ namespace RecordStore.Controllers
                     //we gather the invoice ids that occur during the desired period
 
                 //if no invoices found for the selected criteria then we show message to the rendered view
-                if (invoice_ids == null)
+                if (invoice_ids == null || invoice_ids.Count() < X)
                 {
                     //no results found warning
                     ViewBag.Message = "104";
@@ -93,17 +107,19 @@ namespace RecordStore.Controllers
                 //Dictionary containing the albuum id and sum of tracks sold corresponding to specific album
                 foreach (Invoice invoice in invoice_ids)
                 {
-                    IQueryable<InvoiceLine> inv_lines = from line in rs.InvoiceLines
+                    /*IQueryable<InvoiceLine> inv_lines = from line in rs.InvoiceLines
                                                         where line.InvoiceId == invoice.InvoiceId
-                                                        select line;
+                                                        select line;*/
+                    List<InvoiceLine> lines = rs.InvoiceLines.Where(inv => inv.InvoiceId == invoice.InvoiceId).ToList();
+
                     //we loop for every line of each invoice
                     //to measure records sold per artist
-                    foreach (InvoiceLine line in inv_lines)
+                    foreach (InvoiceLine line in lines)
                     {
                         Track trackData = rs.Tracks.SingleOrDefault(track => track.TrackId == line.TrackId);
                         Album albData = rs.Albums.SingleOrDefault(alb => alb.AlbumId == trackData.AlbumId);
                         Artist artData = rs.Artists.SingleOrDefault(art => art.ArtistId == albData.ArtistId);
-                        if (!ArtistsRecordsSold.ContainsKey(trackData.AlbumId))
+                        if (!ArtistsRecordsSold.ContainsKey(artData.ArtistId))
                         {//add album to dictionary
                             ArtistsRecordsSold.Add(artData.ArtistId, line.Quantity);
                         }
@@ -154,31 +170,38 @@ namespace RecordStore.Controllers
         {
             RecordStoreContext rs = new RecordStoreContext();
             CultureInfo provider = CultureInfo.InvariantCulture;
-            DateTime fromdate = DateTime.ParseExact(datepicker3, "d", provider);
-            DateTime todate = DateTime.ParseExact(datepicker4, "d", provider);
+            DateTime fromdate, todate;
             //1st case
             //we get the dates given from the user input
             //we get all invoices for specific dates
-            IQueryable<Invoice> invoice_ids = null;
-            if (!(fromdate.Equals(null)) && !(todate.Equals(null)))
+            List<Invoice> invoice_ids = null;
+            if (!(datepicker3 == "") && !(datepicker4 == ""))
             {
-                invoice_ids = from invoice in rs.Invoices
-                              where invoice.InvoiceDate >= fromdate && invoice.InvoiceDate < todate
-                              select invoice;
+                String date1 = (DateTime.ParseExact(datepicker3, "mm/dd/yyyy", provider)).ToString("yyyy-mm-dd") + " 00:00:00.000";
+                String date2 = (DateTime.ParseExact(datepicker4, "mm/dd/yyyy", provider)).ToString("yyyy-mm-dd") + " 00:00:00.000";
+                fromdate = DateTime.ParseExact(date1, "yyyy-MM-dd hh:mm:ss.fff", provider);
+                todate = DateTime.ParseExact(date2, "yyyy-MM-dd hh:mm:ss.fff", provider);
+                /*var movies = from artist in rs.Movies
+                where m.ReleaseDate > new DateTime(1984, 6, 1)
+                select m;*/
+                invoice_ids = rs.Invoices.Where(inv => (inv.InvoiceDate > fromdate && inv.InvoiceDate < todate)).ToList();
+
                 ViewBag.Title = "First 10 top songs from " + datepicker3 + "to " + datepicker4;
             }
-            else if (fromdate.Equals(null) && !(todate.Equals(null)))
+            else if (datepicker3 == "" && !(datepicker4 == ""))
             {
-                invoice_ids = from invoice in rs.Invoices
-                              where invoice.InvoiceDate < todate
-                              select invoice;
+                String date2 = (DateTime.ParseExact(datepicker4, "mm/dd/yyyy", provider)).ToString("yyyy-mm-dd") + " 00:00:00.000";
+                todate = DateTime.ParseExact(date2, "yyyy-MM-dd hh:mm:ss.fff", provider);
+                invoice_ids = rs.Invoices.Where(inv => inv.InvoiceDate < todate).ToList();
+
                 ViewBag.Title = "First 10 top songs up to" + datepicker4;
             }
-            else if (!(fromdate.Equals(null)) && todate.Equals(null))
+            else if (!(datepicker3 == "") && (datepicker4 == ""))
             {
-                invoice_ids = from invoice in rs.Invoices
-                              where invoice.InvoiceDate < todate
-                              select invoice;
+                String date1 = (DateTime.ParseExact(datepicker3, "mm/dd/yyyy", provider)).ToString("yyyy-mm-dd") + " 00:00:00.000";
+                fromdate = DateTime.ParseExact(date1, "yyyy-MM-dd hh:mm:ss.fff", provider);
+                invoice_ids = rs.Invoices.Where(inv => inv.InvoiceDate > fromdate).ToList();
+
                 ViewBag.Title = "First 10 top songs from" + datepicker3;
             }
             else
@@ -198,23 +221,35 @@ namespace RecordStore.Controllers
 
             //we sort the first 10 most bought songs for the range we are checking
 
-            List<InvoiceLine> totalSoldPieces = new List<InvoiceLine>();
+            
 
             //get track id & quantity
             Dictionary<int, int> TracksSold = new Dictionary<int, int>();
-            //Dictionary containing the albuum id and sum of tracks sold corresponding to specific album
-            foreach (InvoiceLine piece in totalSoldPieces)
+
+            foreach (Invoice invoice in invoice_ids)
             {
-                Track trackData = rs.Tracks.SingleOrDefault(track => track.TrackId == piece.TrackId);
-                //we get only the first element because track id is unique
-                //trackData.AlbumId is the id of the current album
-                if (!TracksSold.ContainsKey(trackData.TrackId))
-                {//add track to dictionary
-                    TracksSold.Add(trackData.TrackId, piece.Quantity);
-                }
-                else
-                {//add quantity to sum of track pieces sold 
-                    TracksSold[trackData.TrackId] = TracksSold[trackData.TrackId] + piece.Quantity;
+                /*IQueryable<InvoiceLine> inv_lines = from line in rs.InvoiceLines
+                                                    where line.InvoiceId == invoice.InvoiceId
+                                                    select line;*/
+                List<InvoiceLine> lines = rs.InvoiceLines.Where(inv => inv.InvoiceId == invoice.InvoiceId).ToList();
+
+                //we loop for every line of each invoice
+                //to measure records sold per artist
+                foreach (InvoiceLine line in lines)
+                {
+                    //Dictionary containing the albuum id and sum of tracks sold corresponding to specific album
+
+                    Track trackData = rs.Tracks.SingleOrDefault(track => track.TrackId == line.TrackId);
+                    //we get only the first element because track id is unique
+                    //trackData.AlbumId is the id of the current album
+                    if (!TracksSold.ContainsKey(trackData.TrackId))
+                    {//add track to dictionary
+                        TracksSold.Add(trackData.TrackId, line.Quantity);
+                    }
+                    else
+                    {//add quantity to sum of track pieces sold 
+                        TracksSold[trackData.TrackId] = TracksSold[trackData.TrackId] + line.Quantity;
+                    }
                 }
 
             }
@@ -302,8 +337,12 @@ namespace RecordStore.Controllers
             //converting back to dictionary so that we can store key and value columns separately
             var dictionary = SortedList.ToDictionary(x => x.Key, x => x.Value);
 
-            ViewData["0"] = dictionary.Keys.ToList();
-            ViewData["1"] = dictionary.Values.ToList();
+             SortedList.Sort((pair1, pair2) => pair1.Value.CompareTo(pair2.Value));
+             ViewData["0"] = dictionary.Keys.ToList();
+             ViewData["1"] = dictionary.Values.ToList();
+             ViewBag.Title = "Displaying " + SortedList.Count() + " out of " + SortedList.Count() + " top musical genres, based on individual track sales.";
+
+
 
             return View("GetResults");
 

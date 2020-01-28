@@ -79,42 +79,43 @@ namespace RecordStore.Controllers
                 }
                     //we gather the invoice ids that occur during the desired period
 
-                var em = invoice_ids.GetEnumerator();
-
-                List<InvoiceLine> totalSoldPieces = new List<InvoiceLine>();
-                //count invoice lines (tracks sold) - customer can buy once from various artists
-
-                while (em.MoveNext())
+                //if no invoices found for the selected criteria then we show message to the rendered view
+                if (invoice_ids == null)
                 {
-                    // InvoiceLine inv_linee = rs.InvoiceLines.SingleOrDefault(inv  => inv.InvoiceId == em.Current.InvoiceId );
-                    //if we find an invoice line that is part of an invoice in the range we are interested at, we add it to a list
-                    IQueryable<InvoiceLine> inv_lines = from line in rs.InvoiceLines
-                                                        where line.InvoiceId == em.Current.InvoiceId
-                                                        select line;
-                    totalSoldPieces.AddRange(inv_lines);
+                    //no results found warning
+                    ViewBag.Message = "104";
+                    return View("Report");
                 }
+            
              
-                List<Album> allAlbums = rs.Albums.ToList();
-                //get track ids & quantity
-                Dictionary<int, int> AlbumPiecesSold = new Dictionary<int, int>();
+                //get artists ids & quantity
+                Dictionary<int, int> ArtistsRecordsSold = new Dictionary<int, int>();
                 //Dictionary containing the albuum id and sum of tracks sold corresponding to specific album
-                foreach (InvoiceLine piece in totalSoldPieces)
+                foreach (Invoice invoice in invoice_ids)
                 {
-                    //Track trackData = rs.Tracks.SqlQuery("SELECT * FROM Tracks WHERE TrackId = @p0", piece.TrackId).First();
-                    Track trackData = rs.Tracks.SingleOrDefault(track => track.TrackId == piece.TrackId);
-                    //we get only the first element because track id is unique
-                    //trackData.AlbumId is the id of the current album
-                    if (!AlbumPiecesSold.ContainsKey(trackData.AlbumId))
-                    {//add album to dictionary
-                        AlbumPiecesSold.Add(trackData.AlbumId, piece.Quantity);
+                    IQueryable<InvoiceLine> inv_lines = from line in rs.InvoiceLines
+                                                        where line.InvoiceId == invoice.InvoiceId
+                                                        select line;
+                    //we loop for every line of each invoice
+                    //to measure records sold per artist
+                    foreach (InvoiceLine line in inv_lines)
+                    {
+                        Track trackData = rs.Tracks.SingleOrDefault(track => track.TrackId == line.TrackId);
+                        Album albData = rs.Albums.SingleOrDefault(alb => alb.AlbumId == trackData.AlbumId);
+                        Artist artData = rs.Artists.SingleOrDefault(art => art.ArtistId == albData.ArtistId);
+                        if (!ArtistsRecordsSold.ContainsKey(trackData.AlbumId))
+                        {//add album to dictionary
+                            ArtistsRecordsSold.Add(artData.ArtistId, line.Quantity);
+                        }
+                        else
+                        {//add quantity to sum of track pieces sold for album
+                            ArtistsRecordsSold[artData.ArtistId] = ArtistsRecordsSold[artData.ArtistId] + line.Quantity;
+                        }
                     }
-                    else
-                    {//add quantity to sum of track pieces sold for album
-                        AlbumPiecesSold[trackData.AlbumId] = AlbumPiecesSold[trackData.AlbumId] + piece.Quantity;
-                    }
+
                 }
                 //sort final countdown of sales
-                var SortedList = AlbumPiecesSold.ToList();
+                var SortedList = ArtistsRecordsSold.ToList();
 
                 SortedList.Sort((pair1, pair2) => pair1.Value.CompareTo(pair2.Value));
                 //get artist name for sorted albums
@@ -122,36 +123,27 @@ namespace RecordStore.Controllers
                 List<KeyValuePair<int, int>>.Enumerator em2 = SortedList.GetEnumerator();
                 int i = 1; // count loop so that we only return the artists from X first record sales
 
-                if (x_entered)
+                if (!x_entered)
                 {
-                    while (em2.MoveNext() && i <= X)
-                    {
-                        int albumid = em2.Current.Key;
-                        Album albumData = rs.Albums.SingleOrDefault(album => album.AlbumId == albumid);
-                        //Artist aristData = rs.Artists.SqlQuery("SELECT * FROM Artist WHERE ArtistId = @p0", albumData.ArtistId).First();
-                        Artist artistData = rs.Artists.SingleOrDefault(artist => artist.ArtistId == albumData.ArtistId);
-                        ViewData.Add(artistData.Name, i);
-                        i++;
-                    }
-                } 
-                else //we add all data because user didn't select X
+                    //in case x value is not given, we will iterate through all elements of the sorted list
+                    X = SortedList.Count();
+                }
+                IList<String> artists = new List<String>();
+                IList<String> records = new List<String>();
+
+
+                while (em2.MoveNext() && i <= X)
                 {
-                    while (em2.MoveNext())
-                    {
-                        int albumid = em2.Current.Key;
-                        Album albumData = rs.Albums.SingleOrDefault(album => album.AlbumId == albumid);
-                        Artist artistData = rs.Artists.SingleOrDefault(artist => artist.ArtistId == albumData.ArtistId);
-                        ViewData.Add(artistData.Name, i);
-                        i++;
-                    }
+                    Artist artistData = rs.Artists.SingleOrDefault(artist => artist.ArtistId == em2.Current.Key);
+                    artists.Add(artistData.Name);
+                    records.Add((em2.Current.Value).ToString());
+                    i++;
                 }
 
-                if (ViewData == null)
-                {
-                    //no results found warning
-                    ViewBag.Message = "104";
-                    return View("Report");
-                }
+                ViewData["columns"] = new List<String> { "Artist Name" ,"Records Sold" };
+                ViewData["0"] = artists;
+                ViewData["1"] = records;
+
 
                 return View("GetResults");
             }
@@ -168,7 +160,6 @@ namespace RecordStore.Controllers
             //we get the dates given from the user input
             //we get all invoices for specific dates
             IQueryable<Invoice> invoice_ids = null;
-            bool x_entered = true;
             if (!(fromdate.Equals(null)) && !(todate.Equals(null)))
             {
                 invoice_ids = from invoice in rs.Invoices
@@ -194,6 +185,14 @@ namespace RecordStore.Controllers
             {
                 //missing parameters warning
                 ViewBag.Message = "201";
+                return View("Report");
+            }
+
+            //if no invoices found for the selected criteria then we show message to the rendered view
+            if (invoice_ids == null)
+            {
+                //no results found warning
+                ViewBag.Message = "204";
                 return View("Report");
             }
 
@@ -228,16 +227,32 @@ namespace RecordStore.Controllers
             List<KeyValuePair<int, int>>.Enumerator em = SortedList.GetEnumerator();
             int i = 0; // count loop so that we only return the artists from X first record sales
 
+            IList<String> titles = new List<String>();
+            IList<String> albums = new List<String>();
+            IList<String> artists = new List<String>();
+            IList<String> quant = new List<String>();
+
             while (em.MoveNext() & i < 10)
             {
                 int trackId = em.Current.Key;
                 Track trackData = rs.Tracks.SingleOrDefault(track => track.TrackId == trackId);
+                Album albumData = rs.Albums.SingleOrDefault(alb => alb.AlbumId == trackData.AlbumId);
+                Artist artistData = rs.Artists.SingleOrDefault(art => art.ArtistId == albumData.ArtistId);
                 //TODO Fix string of track info
-                ViewData.Add(trackData.Name, em.Current.Value);
+                titles.Add(trackData.Name);
+                albums.Add(albumData.Title);
+                artists.Add(artistData.Name);
+                quant.Add(em.Current.Value.ToString());//adding only the first 10 quantities
                 i++;
             }
 
-            ViewBag.Message = "Ranking | Track Title | Artist Name | Album |  Quantity Sold ";
+            ViewData["columns"] = new List<String>{ "Track Title", "Album", "Artist Name", " Quantity Sold "};
+
+            ViewData["0"] = titles;
+            ViewData["1"] = albums;
+            ViewData["2"] = artists;
+            ViewData["3"] = quant;
+
             return View("GetResults");
 
         }
@@ -246,13 +261,51 @@ namespace RecordStore.Controllers
         {
             RecordStoreContext rs = new RecordStoreContext();
 
-            //TODO Remove X number choice from frontend
-            //TODO Show all genres sorted by counting songs in database 
-            /*var movies = from artist in rs.Movies
-            where m.ReleaseDate > new DateTime(1984, 6, 1)
-            select m;*/
+            //we don't have to execute a linq query as we wish to find out 
+            //the total ranking of music genres of all times
+            List<InvoiceLine> inv_lines = rs.InvoiceLines.ToList();
 
-            return View();
+            //if no invoices found for the selected criteria then we show message to the rendered view
+            if (inv_lines == null)
+            {
+                //no results found warning
+                ViewBag.Message = "304";
+                return View("Report");
+            }
+
+            //get track id & quantity
+            Dictionary<String, int> FamousGenre = new Dictionary<String, int>();
+            //Dictionary containing the albuum id and sum of tracks sold corresponding to specific album
+            foreach (InvoiceLine piece in inv_lines)
+            {
+                Track trackData = rs.Tracks.SingleOrDefault(track => track.TrackId == piece.TrackId);
+                Genre genreData = rs.Genres.SingleOrDefault(genre => genre.GenreId == trackData.GenreId);
+                //we get only the first element because track id is unique
+                //trackData.AlbumId is the id of the current album
+                if (!FamousGenre.ContainsKey(genreData.Name))
+                {//add track to dictionary
+                    FamousGenre.Add(genreData.Name, piece.Quantity);
+                }
+                else
+                {//add quantity to sum of track pieces sold 
+                    FamousGenre[genreData.Name] = FamousGenre[genreData.Name] + piece.Quantity;
+                }
+
+            }
+            //sort final countdown of sales
+            var SortedList = FamousGenre.ToList();
+
+            SortedList.Sort((pair1, pair2) => pair1.Value.CompareTo(pair2.Value));
+
+            ViewData["columns"] = new List<String> { "Genre", "Pieces Sold"};
+
+            //converting back to dictionary so that we can store key and value columns separately
+            var dictionary = SortedList.ToDictionary(x => x.Key, x => x.Value);
+
+            ViewData["0"] = dictionary.Keys.ToList();
+            ViewData["1"] = dictionary.Values.ToList();
+
+            return View("GetResults");
 
         }
     }

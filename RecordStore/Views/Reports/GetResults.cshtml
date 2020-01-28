@@ -9,26 +9,38 @@
     <!--TODO Fix correct table position-->
     <div>
         <h4>@ViewBag.Title</h4>
-        <hr />
-        <dl class="dl-horizontal">
-            <dt>
-                @ViewBag.Message
-            </dt>
+       
+        
+        <table class="table">
 
-            <dd>
-
-            </dd>
-            @foreach (var item in ViewData)
+            <tr>
+                <!--Ranking is always the first column-->
+                <th>Ranking</th>
+                <!--Display all rest column names-->
+                @{ var i = 0; }
+                <!--We have to cast the ViewData to a new collection so that we can iterate with counter later-->
+                @{var col_list = new List<IList<String>>();}
+                @foreach (var item in ViewData["columns"] as IList<String>)
+                {
+                    <th>@item</th>
+                    @col_list[i] = ViewData[i.ToString()] as IList<String>;
+                    @i = i + 1;
+                }
+            </tr>
+            <!--Outer loop is capacity of each column-->
+            @for (int j = 0; j < col_list[0].Count(); j++)
             {
-                <dt>
-                    @item.Value
-                </dt>
+            <tr>
+                <td>@j</td>
+                <!--Inner loop is number of columns-->
+                @for (int h = 0; h < i; h++)
+                {
+                    <td>@col_list[h][j] </td>
+                }
 
-                <dd>
-                    @item.Key
-                </dd>
+            </tr>
             }
-        </dl>
+        </table>
     </div>
     <p>
         @Html.ActionLink("Back to Reports", "Report", "Reports")

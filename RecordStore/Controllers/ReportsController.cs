@@ -23,7 +23,7 @@ namespace RecordStore.Controllers
             CultureInfo provider = CultureInfo.InvariantCulture;
             DateTime fromdate, todate;
             int X;
-            if (!xnumber.Equals(null))
+            if (!(xnumber==""))
             {
                 X = Int32.Parse(xnumber);
             }
@@ -131,13 +131,16 @@ namespace RecordStore.Controllers
 
                 }
                 //sort final countdown of sales
-                var SortedList = ArtistsRecordsSold.ToList();
 
-                SortedList.Sort((pair1, pair2) => pair1.Value.CompareTo(pair2.Value));
-                //get artist name for sorted albums
-                //until X is reached
-                List<KeyValuePair<int, int>>.Enumerator em2 = SortedList.GetEnumerator();
-                int i = 1; // count loop so that we only return the artists from X first record sales
+
+                if (x_entered && ArtistsRecordsSold.Count() <= X)
+                {
+                    //no results found warning: X number out of range
+                    ViewBag.Message = "104";
+                    return View("Report");
+                }
+
+                var SortedList = ArtistsRecordsSold.OrderByDescending(x => x.Value);
 
                 if (!x_entered)
                 {
@@ -146,10 +149,13 @@ namespace RecordStore.Controllers
                 }
                 IList<String> artists = new List<String>();
                 IList<String> records = new List<String>();
-
-
+                //get artist name for sorted albums
+                //until X is reached
+                int i = 0;
+                IEnumerator<KeyValuePair<int, int>> em2 = SortedList.GetEnumerator();
                 while (em2.MoveNext() && i <= X)
                 {
+                    
                     Artist artistData = rs.Artists.SingleOrDefault(artist => artist.ArtistId == em2.Current.Key);
                     artists.Add(artistData.Name);
                     records.Add((em2.Current.Value).ToString());
@@ -254,12 +260,11 @@ namespace RecordStore.Controllers
 
             }
             //sort final countdown of sales
-            var SortedList = TracksSold.ToList();
+            var SortedList = TracksSold.ToList().OrderByDescending(x => x.Value);
 
-            SortedList.Sort((pair1, pair2) => pair1.Value.CompareTo(pair2.Value));
             //get artist name for sorted albums
             //until X is reached
-            List<KeyValuePair<int, int>>.Enumerator em = SortedList.GetEnumerator();
+            IEnumerator<KeyValuePair<int, int>> em = SortedList.GetEnumerator();
             int i = 0; // count loop so that we only return the artists from X first record sales
 
             IList<String> titles = new List<String>();
@@ -328,21 +333,22 @@ namespace RecordStore.Controllers
 
             }
             //sort final countdown of sales
-            var SortedList = FamousGenre.ToList();
+            var SortedList = FamousGenre.ToList().OrderByDescending(x => x.Value);
 
-            SortedList.Sort((pair1, pair2) => pair1.Value.CompareTo(pair2.Value));
+            int i = 0; // count loop so that we only return the artists from X first record sales
 
             ViewData["columns"] = new List<String> { "Genre", "Pieces Sold"};
 
             //converting back to dictionary so that we can store key and value columns separately
-            var dictionary = SortedList.ToDictionary(x => x.Key, x => x.Value);
 
-             SortedList.Sort((pair1, pair2) => pair1.Value.CompareTo(pair2.Value));
-             ViewData["0"] = dictionary.Keys.ToList();
-             ViewData["1"] = dictionary.Values.ToList();
-             ViewBag.Title = "Displaying " + SortedList.Count() + " out of " + SortedList.Count() + " top musical genres, based on individual track sales.";
+            IList<String> genres = SortedList.Select(x => x.Key).ToList();
+            IList<int> quant = SortedList.Select(x => x.Value).ToList();
+            //converting to string
+            IList<String> quantt = quant.Select(x => x.ToString()).ToList();
 
-
+            ViewData["0"] = genres;
+            ViewData["1"] = quantt;
+            ViewBag.Title = "Displaying " + SortedList.Count() + " out of " + SortedList.Count() + " top musical genres, based on individual track sales.";
 
             return View("GetResults");
 

@@ -218,7 +218,7 @@ namespace RecordStore.Controllers
             }
 
             //if no invoices found for the selected criteria then we show message to the rendered view
-            if (invoice_ids == null)
+            if (invoice_ids.Count() == 0)
             {
                 //no results found warning
                 ViewBag.Message = "204";
@@ -334,8 +334,6 @@ namespace RecordStore.Controllers
             }
             //sort final countdown of sales
             var SortedList = FamousGenre.ToList().OrderByDescending(x => x.Value);
-
-            int i = 0; // count loop so that we only return the artists from X first record sales
 
             ViewData["columns"] = new List<String> { "Genre", "Pieces Sold"};
 
